@@ -5,6 +5,9 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float walkSpeed = 5f;
     [SerializeField, Range(0.01f, 1)] float rotationSmooth = .25f;
+    [SerializeField, Range(0, 30)] float jumpForce = 7.5f;
+    [SerializeField] int maxJumps = 2;
+    [SerializeField] LayerMask groundLayer;
 
     Camera mainCamera;
     Vector3 inputMovement;
@@ -14,8 +17,14 @@ public class Player : MonoBehaviour
     readonly int AnimationIdleHash = Animator.StringToHash("Idle");
     readonly int AnimationWalkHash = Animator.StringToHash("Walk");
 
+    readonly int AnimationJumpHash = Animator.StringToHash("Jump.JumpStart");
+    readonly int AnimationLandingHash = Animator.StringToHash("Landing");
+
     bool isIdle = true;
-    bool isMoving = false;
+    bool isMoving;
+    [SerializeField] bool isJumping;
+    [SerializeField] bool isGrounded;
+    int jumpCounter = 0;
 
     void Awake()
     {
@@ -28,6 +37,8 @@ public class Player : MonoBehaviour
     {
         ReadPlayerInput();
         MovePlayer();
+        Jump();
+        CheckIsGrounded();
         CameraFollow();
         ControlAnimation();
     }
@@ -36,6 +47,8 @@ public class Player : MonoBehaviour
     {
         inputMovement.x = Input.GetAxis("Horizontal");
         inputMovement.z = Input.GetAxis("Vertical");
+
+        isJumping = Input.GetButtonDown("Jump");
     }
 
     void MovePlayer()
@@ -64,11 +77,43 @@ public class Player : MonoBehaviour
             animator.CrossFade(AnimationWalkHash, .1f);
         }
 
-        if(inputMovement == Vector3.zero && !isIdle)
+        if (inputMovement == Vector3.zero && !isIdle)
         {
             isIdle = true;
             isMoving = false;
             animator.CrossFade(AnimationIdleHash, .1f);
+        }
+
+        if (isJumping)
+        {
+            animator.CrossFade(AnimationJumpHash, .1f);
+        }
+    }
+
+    void Jump()
+    {
+        if (maxJumps > 0 && jumpCounter < maxJumps && isJumping)
+        {
+            jumpCounter++;
+
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+
+            if (jumpCounter == maxJumps)
+            {
+                jumpCounter = 0;
+            }
+        }
+    }
+
+    void CheckIsGrounded()
+    {
+        if (!isGrounded && Physics.Raycast(transform.position, Vector3.down, 1.5f, groundLayer))
+        {
+            Debug.Log("Landing");
+            isJumping = false;
+            isGrounded = true;
+            animator.CrossFade(AnimationLandingHash, .1f);
         }
     }
 }
