@@ -1,119 +1,72 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] InputReader inputReader;
+
+    [Header("Movement Settings")]
     [SerializeField] float walkSpeed = 5f;
     [SerializeField, Range(0.01f, 1)] float rotationSmooth = .25f;
     [SerializeField, Range(0, 30)] float jumpForce = 7.5f;
     [SerializeField] int maxJumps = 2;
     [SerializeField] LayerMask groundLayer;
 
-    Camera mainCamera;
-    Vector3 inputMovement;
-    Rigidbody rb;
-    Animator animator;
+    [Header("Debug")]
+    [SerializeField] bool isJumpRequested = false;
+    [SerializeField] int jumpCounter = 0;
 
-    readonly int AnimationIdleHash = Animator.StringToHash("Idle");
-    readonly int AnimationWalkHash = Animator.StringToHash("Walk");
+    public InputReader InputReader => inputReader;
 
-    readonly int AnimationJumpHash = Animator.StringToHash("Jump.JumpStart");
-    readonly int AnimationLandingHash = Animator.StringToHash("Landing");
-
-    bool isIdle = true;
-    bool isMoving;
-    [SerializeField] bool isJumping;
-    [SerializeField] bool isGrounded;
-    int jumpCounter = 0;
+    CharacterController controller;
+    PlayerStateMachine stateMachine;
 
     void Awake()
     {
-        mainCamera = Camera.main;
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponentInChildren<Animator>();
+        controller = GetComponent<CharacterController>();
+
+        stateMachine = PlayerStateMachine
+                        .Create(inputReader, controller)
+                        .Settings(walkSpeed, rotationSmooth, jumpForce, maxJumps, groundLayer);
+    }
+
+    void OnEnable()
+    {
+        inputReader.EnableGameplay();
+    }
+
+    void Start()
+    {
+        stateMachine.Start();
     }
 
     void Update()
     {
-        ReadPlayerInput();
-        MovePlayer();
-        Jump();
-        CheckIsGrounded();
-        CameraFollow();
-        ControlAnimation();
+        stateMachine.Update();
     }
 
-    void ReadPlayerInput()
+    void FixedUpdate()
     {
-        inputMovement.x = Input.GetAxis("Horizontal");
-        inputMovement.z = Input.GetAxis("Vertical");
-
-        isJumping = Input.GetButtonDown("Jump");
+        stateMachine.FixedUpdate();
     }
 
-    void MovePlayer()
+    void OnDisable()
     {
-        Vector3 movement = walkSpeed * Time.deltaTime * inputMovement;
-        if (movement != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), rotationSmooth);
-        }
-        rb.MovePosition(rb.position + movement);
+        inputReader.Disable();
     }
 
-    void CameraFollow()
+    void OnDestroy()
     {
-        Vector3 cameraPosition = transform.position + new Vector3(0, 3.5f, -3.75f);
-        mainCamera.transform.position = cameraPosition;
-        mainCamera.transform.LookAt(transform);
+        stateMachine.Exit();
     }
 
-    void ControlAnimation()
+    internal class PlayerAnimationHashes
     {
-        if (inputMovement != Vector3.zero && !isMoving)
-        {
-            isIdle = false;
-            isMoving = true;
-            animator.CrossFade(AnimationWalkHash, .1f);
-        }
-
-        if (inputMovement == Vector3.zero && !isIdle)
-        {
-            isIdle = true;
-            isMoving = false;
-            animator.CrossFade(AnimationIdleHash, .1f);
-        }
-
-        if (isJumping)
-        {
-            animator.CrossFade(AnimationJumpHash, .1f);
-        }
-    }
-
-    void Jump()
-    {
-        if (maxJumps > 0 && jumpCounter < maxJumps && isJumping)
-        {
-            jumpCounter++;
-
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
-
-            if (jumpCounter == maxJumps)
-            {
-                jumpCounter = 0;
-            }
-        }
-    }
-
-    void CheckIsGrounded()
-    {
-        if (!isGrounded && Physics.Raycast(transform.position, Vector3.down, 1.5f, groundLayer))
-        {
-            Debug.Log("Landing");
-            isJumping = false;
-            isGrounded = true;
-            animator.CrossFade(AnimationLandingHash, .1f);
-        }
+        public readonly int AnimationIdleHash = Animator.StringToHash("Idle");
+        public readonly int AnimationWalkHash = Animator.StringToHash("Walk");
+        public readonly int AnimationJumpHash = Animator.StringToHash("Jump.JumpStart");
+        public readonly int AnimationLandingHash = Animator.StringToHash("Landing");
     }
 }
