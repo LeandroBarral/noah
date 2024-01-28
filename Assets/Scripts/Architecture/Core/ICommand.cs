@@ -1,0 +1,4 @@
+namespace LobaApps.Architecture.Core
+{
+
+}
