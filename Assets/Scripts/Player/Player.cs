@@ -1,5 +1,6 @@
 namespace LobaApps
 {
+    using LobaApps.Architecture.Core;
     using UnityEngine;
 
     [RequireComponent(typeof(CharacterController))]
