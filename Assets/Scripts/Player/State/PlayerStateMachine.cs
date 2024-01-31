@@ -18,8 +18,6 @@ namespace LobaApps
         public bool IsMovementPressed => MovementInput.sqrMagnitude > 0.1f;
         public bool IsJumpPressed;
 
-        private float rotationFactorPerFrame;
-
         public PlayerStateMachine(Player player, InputReader inputReader, CharacterController controller, Animator animator, Settings settings)
             : base(Machines.Grounded)
         {
@@ -65,7 +63,7 @@ namespace LobaApps
         {
             Machines.Grounded => new PlayerGroundedStateMachine(this),
             Machines.Air => new PlayerAirStateMachine(this),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid state type"),
         };
 
         private void ApplyMovement()

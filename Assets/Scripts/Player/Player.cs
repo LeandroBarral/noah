@@ -3,11 +3,12 @@ namespace LobaApps
     using UnityEngine;
 
     [RequireComponent(typeof(CharacterController))]
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IPlayerEntity
     {
         [Header("References")]
         [SerializeField] InputReader inputReader;
         [SerializeField] Animator animator;
+        [SerializeField] PlayerAnimation playerAnimation;
 
         [Header("Movement Settings")]
         [SerializeField] float walkSpeed = 5f;
@@ -17,6 +18,7 @@ namespace LobaApps
         [SerializeField] LayerMask groundLayer;
 
         public InputReader InputReader => inputReader;
+        public PlayerAnimation Animations => playerAnimation;
 
         CharacterController controller;
         PlayerStateMachine stateMachine;
@@ -49,5 +51,18 @@ namespace LobaApps
             inputReader.Disable();
             stateMachine.Exit();
         }
+
+        public void Attack()
+        {
+        }
+
+        public void Jump()
+        {
+        }
+
+        public void Move()
+        {
+        }
+
     }
 }

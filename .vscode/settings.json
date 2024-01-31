@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "noah.sln"
+    "dotnet.defaultSolution": "uKit.sln"
 }
