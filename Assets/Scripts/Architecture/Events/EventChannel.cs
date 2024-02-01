@@ -26,7 +26,7 @@ namespace LobaApps.Architecture.Events
         }
     }
 
-    [CreateAssetMenu(menuName = "Architecture/Events/EventChannel", fileName = "EventChannel")]
+    [CreateAssetMenu(menuName = "Architecture/Events/Channels/EventChannel", fileName = "EventChannel")]
     public class EventChannel : EventChannel<Event>
     {
     }

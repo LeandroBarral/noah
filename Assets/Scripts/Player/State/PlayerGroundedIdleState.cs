@@ -24,13 +24,13 @@ namespace LobaApps
 
         public void Start()
         {
-            Debug.Log(">> [Enter] State -> Idle");
+            // Debug.Log(">> [Enter] State -> Idle");
             stateMachine.Context.Animator.CrossFade(PlayerAnimationHashes.Idle, 0.1f);
         }
 
         public void Exit()
         {
-            Debug.Log("<< [Exit] State -> Idle");
+            // Debug.Log("<< [Exit] State -> Idle");
         }
 
         public void Update()

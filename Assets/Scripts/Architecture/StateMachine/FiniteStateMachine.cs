@@ -27,7 +27,7 @@ namespace LobaApps.Architecture.State
 
         public virtual void Start()
         {
-            Debug.Log($">>> [Enter] {GetType().Name}");
+            // Debug.Log($">>> [Enter] {GetType().Name}");
             if (TryGetCachedOrBuild(InitialStateKey, out IState<EState> state))
             {
                 CurrentKey = InitialStateKey;
@@ -83,7 +83,7 @@ namespace LobaApps.Architecture.State
         public virtual void Exit()
         {
             Current.Exit();
-            Debug.Log($"<<< [Exit] {GetType().Name}");
+            // Debug.Log($"<<< [Exit] {GetType().Name}");
         }
 
         private bool TryGetCachedOrBuild(EState initialStateKey, out IState<EState> state)

@@ -27,7 +27,7 @@ namespace LobaApps.Architecture.State
 
         public virtual void Start()
         {
-            Debug.Log($">>> [Enter] {GetType().Name}");
+            // Debug.Log($">>>> [Enter] {GetType().Name}");
             if (TryGetCachedOrBuild(InitialStateMachineKey, out IStateMachine machine))
             {
                 CurrentKey = InitialStateMachineKey;
@@ -49,7 +49,7 @@ namespace LobaApps.Architecture.State
         public virtual void Exit()
         {
             Current.Exit();
-            Debug.Log($"<<<< [Exit] {GetType().Name}");
+            // Debug.Log($"<<<< [Exit] {GetType().Name}");
         }
 
         public void StartTransition(IStateTransition<EStateMachine> transition)

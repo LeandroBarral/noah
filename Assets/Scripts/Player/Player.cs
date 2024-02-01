@@ -23,10 +23,12 @@ namespace LobaApps
 
         CharacterController controller;
         PlayerStateMachine stateMachine;
+        Health playerHealth;
 
         void Awake()
         {
             controller = GetComponent<CharacterController>();
+            playerHealth = GetComponent<Health>();
 
             PlayerStateMachine.Settings playerStateSettings = new(walkSpeed, rotationSmooth, jumpForce, maxJumps, groundLayer);
             stateMachine = new PlayerStateMachine(this, inputReader, controller, animator, playerStateSettings);
@@ -39,6 +41,23 @@ namespace LobaApps
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                playerHealth.Damage(playerHealth.Max / 10);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                playerHealth.Heal(playerHealth.Max / 10);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                playerHealth.FullHeal();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                playerHealth.SetMaxHealth(1000);
+            }
+
             stateMachine.Update();
         }
 
@@ -64,6 +83,6 @@ namespace LobaApps
         public void Move()
         {
         }
-
     }
+
 }

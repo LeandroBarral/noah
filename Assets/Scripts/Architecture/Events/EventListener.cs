@@ -25,4 +25,8 @@ namespace LobaApps.Architecture.Events
     public class EventListener : EventListener<Empty>
     {
     }
+
+    public class EmptyEventListener : EventListener<Empty>
+    {
+    }
 }

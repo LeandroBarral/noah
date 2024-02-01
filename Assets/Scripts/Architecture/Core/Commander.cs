@@ -5,7 +5,7 @@ namespace LobaApps.Architecture.Core
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class CommandManager : MonoBehaviour
+    public class Commander : MonoBehaviour
     {
         private IPlayerEntity playerEntity;
         private ICommand singleCommand;
