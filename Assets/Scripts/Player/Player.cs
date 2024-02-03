@@ -4,7 +4,7 @@ namespace LobaApps
     using UnityEngine;
 
     [RequireComponent(typeof(CharacterController))]
-    public class Player : MonoBehaviour, IPlayerEntity
+    public class Player : MonoBehaviour, IPlayer, IPlayerEntity
     {
         [Header("References")]
         [SerializeField] InputReader inputReader;

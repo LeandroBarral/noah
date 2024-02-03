@@ -2,6 +2,7 @@
 
 namespace LobaApps
 {
+
     public interface IPlayerEntity
     {
         void Attack();
