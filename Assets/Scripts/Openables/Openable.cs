@@ -1,8 +1,8 @@
 
-namespace Architecture.GamePlay
+namespace LobaApps
 {
-    using LobaApps;
     using LobaApps.Architecture.Core;
+    using LobaApps.Architecture.GamePlay;
     using UnityEngine;
 
     [RequireComponent(typeof(Collider))]

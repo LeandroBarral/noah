@@ -1,4 +1,4 @@
-namespace Architecture.GamePlay
+namespace LobaApps.Architecture.GamePlay
 {
     public interface IOpenable
     {

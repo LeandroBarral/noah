@@ -1,8 +1,7 @@
-
-
-namespace LobaApps.Architecture.Core
+namespace LobaApps
 {
     using System.Collections.Generic;
+    using LobaApps.Architecture.Core;
     using UnityEngine;
 
     public class Commander : MonoBehaviour
