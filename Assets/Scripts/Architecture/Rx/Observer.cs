@@ -7,6 +7,11 @@ namespace LobaApps.Architecture.Rx
     public interface IObserver<T>
     {
         public T Value { get; set; }
+        public void Set(T value);
+        public void AddListener(UnityAction<T> callback);
+        public void RemoveListener(UnityAction<T> callback);
+        public void RemoveAllListeners();
+        public void Dispose();
     }
 
     public class Observer<T> : IObserver<T>
@@ -19,6 +24,8 @@ namespace LobaApps.Architecture.Rx
             get => value;
             set => Set(value);
         }
+
+        public static implicit operator T(Observer<T> observer) => observer.value;
 
         public Observer(T value, UnityAction<T> callback = null)
         {
