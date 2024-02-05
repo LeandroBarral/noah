@@ -17,6 +17,10 @@ namespace LobaApps.Architecture.Core
 
         private GenericPlayerInputActions inputActions;
 
+        private Features features = Features.All;
+
+        public void WithFeatureToggle(Features features) => this.features = features;
+
         private void OnEnable()
         {
             if (inputActions == null)
@@ -39,38 +43,61 @@ namespace LobaApps.Architecture.Core
 
         void GenericPlayerInputActions.IGameplayActions.OnDash(InputAction.CallbackContext context)
         {
-            OnDash?.Invoke();
+            if (features.HasFlag(Features.Dash))
+                OnDash?.Invoke();
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnInteract(InputAction.CallbackContext context)
         {
-            OnInteract?.Invoke();
+            if (features.HasFlag(Features.Interact))
+                OnInteract?.Invoke();
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnJump(InputAction.CallbackContext context)
         {
-            if (context.performed || context.canceled)
-                OnJump?.Invoke(context.ReadValueAsButton());
+            if (features.HasFlag(Features.Jump))
+                if (context.performed || context.canceled)
+                    OnJump?.Invoke(context.ReadValueAsButton());
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnLook(InputAction.CallbackContext context)
         {
-            OnLook?.Invoke(context.ReadValue<Vector2>());
+            if (features.HasFlag(Features.Look))
+                OnLook?.Invoke(context.ReadValue<Vector2>());
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnMove(InputAction.CallbackContext context)
         {
-            OnMove?.Invoke(context.ReadValue<Vector2>());
+            if (features.HasFlag(Features.Move))
+                OnMove?.Invoke(context.ReadValue<Vector2>());
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnPause(InputAction.CallbackContext context)
         {
-            OnPause?.Invoke();
+            if (features.HasFlag(Features.Pause))
+                OnPause?.Invoke();
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnWalk(InputAction.CallbackContext context)
         {
-            OnWalk?.Invoke(context.ReadValueAsButton());
+            if (features.HasFlag(Features.Walk))
+                OnWalk?.Invoke(context.ReadValueAsButton());
+        }
+
+        [Flags]
+        public enum Features
+        {
+            None = 0,
+            Jump = 1 << 0,
+            Dash = 1 << 1,
+            Interact = 1 << 2,
+            Walk = 1 << 3,
+            Look = 1 << 4,
+            Move = 1 << 5,
+            Pause = 1 << 6,
+            Grounded = Dash | Interact | Walk | Look | Move | Pause,
+            Air = Jump | Look | Move | Pause,
+            All = Jump | Dash | Interact | Walk | Look | Move | Pause
         }
     }
 }

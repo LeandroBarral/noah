@@ -8,7 +8,6 @@ namespace LobaApps
     {
         [Header("References")]
         [SerializeField] InputReader inputReader;
-        [SerializeField] Animator animator;
         [SerializeField] PlayerAnimation playerAnimation;
 
         [Header("Grounded Settings")]

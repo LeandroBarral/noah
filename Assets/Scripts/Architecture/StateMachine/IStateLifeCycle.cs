@@ -1,4 +1,6 @@
 
+using System.Collections;
+
 namespace LobaApps.Architecture.State
 {
     public interface IStateLifeCycle

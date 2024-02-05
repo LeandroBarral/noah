@@ -27,12 +27,12 @@ namespace LobaApps
             { LandingHash, 1.2f },
         };
 
-        public float Attack01(float? crossFadeDuration = null) => CrossFadeAnimation(Attack01Hash, crossFadeDuration);
-        public float Idle(float? crossFadeDuration = null) => CrossFadeAnimation(IdleHash, crossFadeDuration);
-        public float Walk(float? crossFadeDuration = null) => CrossFadeAnimation(WalkHash, crossFadeDuration);
-        public float Run(float? crossFadeDuration = null) => CrossFadeAnimation(RunHash, crossFadeDuration);
-        public float JumpStart(float? crossFadeDuration = null) => CrossFadeAnimation(JumpStartHash, crossFadeDuration);
-        public float Falling(float? crossFadeDuration = null) => CrossFadeAnimation(FallingHash, crossFadeDuration);
-        public float Landing(float? crossFadeDuration = null) => CrossFadeAnimation(LandingHash, crossFadeDuration);
+        public void Attack01(float? crossFadeDuration = null) => CrossFadeAndWait(Attack01Hash, crossFadeDuration);
+        public void Idle(float? crossFadeDuration = null) => CrossFade(IdleHash, crossFadeDuration);
+        public void Walk(float? crossFadeDuration = null) => CrossFadeAndWait(WalkHash, crossFadeDuration);
+        public void Run(float? crossFadeDuration = null) => CrossFadeAndWait(RunHash, crossFadeDuration);
+        public void JumpStart(float? crossFadeDuration = null) => CrossFadeAndWait(JumpStartHash, crossFadeDuration);
+        public void Falling(float? crossFadeDuration = null) => CrossFadeAndWait(FallingHash, crossFadeDuration);
+        public void Landing(float? crossFadeDuration = null) => CrossFadeAndWait(LandingHash, crossFadeDuration);
     }
 }

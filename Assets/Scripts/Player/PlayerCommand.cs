@@ -27,7 +27,7 @@ namespace LobaApps
         public override IEnumerator Execute()
         {
             Entity.Attack();
-            yield return new WaitForSeconds(Entity.Animations.Attack01());
+            yield return new WaitForSeconds(0);
             Entity.Animations.Idle();
         }
     }
@@ -41,7 +41,7 @@ namespace LobaApps
         public override IEnumerator Execute()
         {
             Entity.Move();
-            yield return new WaitForSeconds(Entity.Animations.Run());
+            yield return new WaitForSeconds(0);
         }
     }
 
@@ -54,11 +54,9 @@ namespace LobaApps
         public override IEnumerator Execute()
         {
             Entity.Jump();
-            yield return new WaitForSeconds(Entity.Animations.JumpStart());
-            yield return new WaitForSeconds(Entity.Animations.Falling());
             Entity.Animations.Landing();
-            yield return new WaitForSeconds(Entity.Animations.Landing());
             Entity.Animations.Idle();
+            yield return new WaitForSeconds(0);
         }
     }
 }

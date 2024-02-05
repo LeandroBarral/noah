@@ -17,7 +17,7 @@ namespace LobaApps
             { OpenHash, 3.5f },
         };
 
-        public float Idle() => CrossFadeAnimation(IdleHash);
-        public float Open() => CrossFadeAnimation(OpenHash);
+        public float Idle() => CrossFade(IdleHash);
+        public float Open() => CrossFade(OpenHash);
     }
 }
