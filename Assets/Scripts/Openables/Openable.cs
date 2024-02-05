@@ -10,13 +10,16 @@ namespace LobaApps
     public class Openable : MonoBehaviour, IOpenable
     {
         OpenableAnimation animationManager;
+        State state;
 
         void Awake()
         {
             TryGetComponent(out animationManager);
         }
 
-        private void Start() {
+        private void Start()
+        {
+            state = State.Closed;
             animationManager.Idle();
         }
 
@@ -27,14 +30,20 @@ namespace LobaApps
 
         public void Open()
         {
-            Debug.Log("Open " + gameObject.name);
+            state = State.Opened;
             animationManager.Open();
         }
 
-        void OnTriggerEnter(Collider other)
+        void OnCollisionEnter(Collision other)
         {
-            if (other.TryGetComponent(out IPlayer _))
+            if (state == State.Closed && other.gameObject.TryGetComponent(out IPlayer _))
                 Open();
+        }
+
+        enum State
+        {
+            Closed,
+            Opened
         }
     }
 }

@@ -15,8 +15,10 @@ namespace LobaApps.Architecture.Core
         {
             float duration = crossFadeDuration ?? CrossFadeDuration;
             animator.CrossFade(animationHash, duration);
-            AnimatorClipInfo clipInfo = animator.GetCurrentAnimatorClipInfo(0)[0];
-            return clipInfo.clip.length;
+            AnimatorClipInfo[] clipInfos = animator.GetCurrentAnimatorClipInfo(0);
+            if (clipInfos.Length == 0) return 0;
+
+            return clipInfos[0].clip.length;
         }
     }
 }

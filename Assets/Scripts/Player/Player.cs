@@ -37,6 +37,7 @@ namespace LobaApps
         void Start()
         {
             stateMachine.Start();
+            controller.detectCollisions = true;
         }
 
         void Update()

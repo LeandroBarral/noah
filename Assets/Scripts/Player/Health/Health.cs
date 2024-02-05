@@ -1,15 +1,19 @@
 namespace LobaApps
 {
+    using LobaApps.Architecture.Rx;
     using UnityEngine;
 
-    public partial class Health : MonoBehaviour
+    public class Health : MonoBehaviour
     {
         [SerializeField] float max = 100;
         [SerializeField] HealthEventChannel healthChanged;
 
+        public Observer<float> Value { get; private set; }
+
         public float Max
         {
-            get => max; set
+            get => max;
+            set
             {
                 max = value;
                 RaiseHealthChanged();
@@ -19,7 +23,8 @@ namespace LobaApps
         float current;
         public float Current
         {
-            get => current; set
+            get => current;
+            set
             {
                 current = value;
                 RaiseHealthChanged();
@@ -33,11 +38,13 @@ namespace LobaApps
         void Awake()
         {
             Current = Max;
+            Value = new Observer<float>(Current);
         }
 
         void Start()
         {
             RaiseHealthChanged();
+            Value.Invoke();
         }
 
         public void SetMaxHealth(float newMaxHealth)
