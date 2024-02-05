@@ -3,7 +3,6 @@ namespace LobaApps
 {
     using System.Collections.Generic;
     using LobaApps.Architecture.State;
-    using UnityEngine;
 
     internal class PlayerAirJumpState : IState<PlayerAirStateMachine.States>
     {
@@ -20,7 +19,7 @@ namespace LobaApps
         public void Start()
         {
             // Debug.Log(">> [Enter] State -> Jump");
-            stateMachine.Context.Animator.CrossFade(PlayerAnimationHashes.JumpStart, 0.1f);
+            stateMachine.Context.PlayerAnimation.JumpStart();
         }
 
         public void Exit()

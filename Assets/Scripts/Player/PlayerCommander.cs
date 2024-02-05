@@ -14,7 +14,10 @@ namespace LobaApps
 
         private void Awake()
         {
-            playerEntity = GetComponent<IPlayerEntity>();
+            if (!TryGetComponent(out IPlayerEntity playerEntity))
+            {
+                enabled = false;
+            }
         }
 
         private void Start()

@@ -27,12 +27,12 @@ namespace LobaApps
             { LandingHash, 1.2f },
         };
 
-        public float Attack01() => CrossFadeAnimation(Attack01Hash);
-        public float Idle() => CrossFadeAnimation(IdleHash);
-        public float Walk() => CrossFadeAnimation(WalkHash);
-        public float Run() => CrossFadeAnimation(RunHash);
-        public float JumpStart() => CrossFadeAnimation(JumpStartHash);
-        public float Falling() => CrossFadeAnimation(FallingHash);
-        public float Landing() => CrossFadeAnimation(LandingHash);
+        public float Attack01(float? crossFadeDuration = null) => CrossFadeAnimation(Attack01Hash, crossFadeDuration);
+        public float Idle(float? crossFadeDuration = null) => CrossFadeAnimation(IdleHash, crossFadeDuration);
+        public float Walk(float? crossFadeDuration = null) => CrossFadeAnimation(WalkHash, crossFadeDuration);
+        public float Run(float? crossFadeDuration = null) => CrossFadeAnimation(RunHash, crossFadeDuration);
+        public float JumpStart(float? crossFadeDuration = null) => CrossFadeAnimation(JumpStartHash, crossFadeDuration);
+        public float Falling(float? crossFadeDuration = null) => CrossFadeAnimation(FallingHash, crossFadeDuration);
+        public float Landing(float? crossFadeDuration = null) => CrossFadeAnimation(LandingHash, crossFadeDuration);
     }
 }

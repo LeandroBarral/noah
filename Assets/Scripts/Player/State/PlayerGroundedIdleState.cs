@@ -25,7 +25,7 @@ namespace LobaApps
         public void Start()
         {
             // Debug.Log(">> [Enter] State -> Idle");
-            stateMachine.Context.Animator.CrossFade(PlayerAnimationHashes.Idle, 0.1f);
+            stateMachine.Context.PlayerAnimation.Idle();
         }
 
         public void Exit()

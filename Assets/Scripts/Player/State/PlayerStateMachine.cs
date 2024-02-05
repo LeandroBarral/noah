@@ -8,23 +8,36 @@ namespace LobaApps
 
     public class PlayerStateMachine : HierarchicalStateMachine<PlayerStateMachine.Machines>
     {
-        public readonly InputReader InputReader;
-        public readonly CharacterController Controller;
         public readonly Settings MachineSettings;
-        public readonly Animator Animator;
+        public readonly PlayerAnimation PlayerAnimation;
         public readonly Player Player;
+        readonly InputReader InputReader;
+        readonly CharacterController Controller;
 
         public Vector2 MovementInput;
         public Vector3 AppliedMovement;
-        public bool IsMovementPressed => MovementInput.sqrMagnitude > 0.1f;
         public bool IsJumpPressed;
 
-        public PlayerStateMachine(Player player, InputReader inputReader, CharacterController controller, Animator animator, Settings settings)
-            : base(Machines.Grounded)
+        float gravity = -9.81f;
+        readonly float groundedGravity = -0.05f;
+
+        float initialJumpVelocity;
+
+        public bool IsJumping { get; private set; } = false;
+        public bool IsMovementPressed => MovementInput.sqrMagnitude > 0.1f;
+        public bool IsFalling => AppliedMovement.y < 0.0f && !IsJumpPressed;
+
+        public PlayerStateMachine(
+            Player player,
+            InputReader inputReader,
+            CharacterController controller,
+            PlayerAnimation playerAnimation,
+            Settings settings
+        ) : base(Machines.Grounded)
         {
             InputReader = inputReader;
             Controller = controller;
-            Animator = animator;
+            PlayerAnimation = playerAnimation;
             MachineSettings = settings;
             Player = player;
 
@@ -39,17 +52,25 @@ namespace LobaApps
             InputReader.OnMove += OnMoveHandler;
 
             InputReader.EnableGameplay();
+
+            SetupJump();
+        }
+
+        private void SetupJump()
+        {
+            float timeToApex = MachineSettings.MaxJumpTime / 2;
+            gravity = -2 * MachineSettings.MaxJumpHeight / Mathf.Pow(timeToApex, 2);
+            initialJumpVelocity = 2 * MachineSettings.MaxJumpHeight / timeToApex;
         }
 
         public override void Update()
         {
             base.Update();
 
-            ApplyGravity();
-            
-            HandleRotation();
-
+            ApplyRotation();
             ApplyMovement();
+            ApplyGravity();
+            ApplyJump();
         }
 
         public override void Exit()
@@ -67,6 +88,23 @@ namespace LobaApps
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid state type"),
         };
 
+        private void ApplyJump()
+        {
+            if (IsJumpPressed && !IsJumping && Controller.isGrounded)
+            {
+                IsJumping = true;
+                float previousYVelocity = AppliedMovement.y;
+                float newYVelocity = previousYVelocity + initialJumpVelocity;
+                float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
+                AppliedMovement.y = nextYVelocity;
+            }
+            else if (!IsJumpPressed && IsJumping && Controller.isGrounded)
+            {
+                IsJumping = false;
+                IsJumpPressed = false;
+            }
+        }
+
         private void ApplyMovement()
         {
             Controller.Move(Time.deltaTime * MachineSettings.WalkSpeed * AppliedMovement);
@@ -74,10 +112,27 @@ namespace LobaApps
 
         private void ApplyGravity()
         {
-            AppliedMovement.y -= 9.81f * Time.deltaTime;
+            if (Controller.isGrounded)
+            {
+                AppliedMovement.y = groundedGravity;
+            }
+            else if (IsFalling)
+            {
+                float previousYVelocity = AppliedMovement.y;
+                float newYVelocity = previousYVelocity + (gravity * MachineSettings.FallMultiplier * Time.deltaTime);
+                float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
+                AppliedMovement.y = nextYVelocity;
+            }
+            else
+            {
+                float previousYVelocity = AppliedMovement.y;
+                float newYVelocity = previousYVelocity + (gravity * Time.deltaTime);
+                float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
+                AppliedMovement.y = nextYVelocity;
+            }
         }
 
-        private void HandleRotation()
+        private void ApplyRotation()
         {
             if (IsMovementPressed)
             {
@@ -110,8 +165,8 @@ namespace LobaApps
 
         private void BuildTransitions()
         {
-            Transitions.Add(new Transition<Machines>(Machines.Air, new FuncPredicate(() => IsJumpPressed)));
-            Transitions.Add(new Transition<Machines>(Machines.Grounded, new FuncPredicate(() => Controller.isGrounded && !IsJumpPressed)));
+            Transitions.Add(new Transition<Machines>(Machines.Air, new FuncPredicate(() => !Controller.isGrounded)));
+            Transitions.Add(new Transition<Machines>(Machines.Grounded, new FuncPredicate(() => Controller.isGrounded)));
         }
 
         public enum Machines
@@ -125,16 +180,20 @@ namespace LobaApps
         {
             readonly public float WalkSpeed;
             readonly public float RotationSmooth;
-            readonly public float JumpForce;
+            readonly public float MaxJumpHeight;
+            readonly public float MaxJumpTime;
             readonly public int MaxJumps;
+            readonly public float FallMultiplier;
             readonly public LayerMask GroundLayer;
 
-            public Settings(float walkSpeed, float rotationSmooth, float jumpForce, int maxJumps, LayerMask groundLayer)
+            public Settings(float walkSpeed, float rotationSmooth, float maxJumpHeight, float maxJumpTime, int maxJumps, float fallMultiplier, LayerMask groundLayer)
             {
                 WalkSpeed = walkSpeed;
                 RotationSmooth = rotationSmooth;
-                JumpForce = jumpForce;
+                MaxJumpHeight = maxJumpHeight;
+                MaxJumpTime = maxJumpTime;
                 MaxJumps = maxJumps;
+                FallMultiplier = fallMultiplier;
                 GroundLayer = groundLayer;
             }
         }

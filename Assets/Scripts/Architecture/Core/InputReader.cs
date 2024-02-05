@@ -49,7 +49,8 @@ namespace LobaApps.Architecture.Core
 
         void GenericPlayerInputActions.IGameplayActions.OnJump(InputAction.CallbackContext context)
         {
-            OnJump?.Invoke(context.ReadValueAsButton());
+            if (context.performed || context.canceled)
+                OnJump?.Invoke(context.ReadValueAsButton());
         }
 
         void GenericPlayerInputActions.IGameplayActions.OnLook(InputAction.CallbackContext context)

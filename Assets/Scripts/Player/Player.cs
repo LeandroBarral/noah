@@ -4,22 +4,25 @@ namespace LobaApps
     using UnityEngine;
 
     [RequireComponent(typeof(CharacterController))]
-    public class Player : MonoBehaviour, IPlayer, IPlayerEntity
+    public class Player : MonoBehaviour, IPlayer
     {
         [Header("References")]
         [SerializeField] InputReader inputReader;
         [SerializeField] Animator animator;
         [SerializeField] PlayerAnimation playerAnimation;
 
-        [Header("Movement Settings")]
+        [Header("Grounded Settings")]
         [SerializeField] float walkSpeed = 5f;
         [SerializeField, Range(1f, 15f)] float rotationSmooth = 10f;
-        [SerializeField, Range(0, 30)] float jumpForce = 7.5f;
-        [SerializeField] int maxJumps = 2;
         [SerializeField] LayerMask groundLayer;
 
+        [Header("Air Settings")]
+        [SerializeField, Range(0, 30)] float maxJumpHeight = 2f;
+        [SerializeField, Range(0, 30)] float maxJumpTime = 1f;
+        [SerializeField, Min(0)] int maxJumps = 2;
+        [SerializeField, Min(0)] float fallMultiplier = 2f;
+
         public InputReader InputReader => inputReader;
-        public PlayerAnimation Animations => playerAnimation;
 
         CharacterController controller;
         PlayerStateMachine stateMachine;
@@ -30,14 +33,13 @@ namespace LobaApps
             controller = GetComponent<CharacterController>();
             playerHealth = GetComponent<Health>();
 
-            PlayerStateMachine.Settings playerStateSettings = new(walkSpeed, rotationSmooth, jumpForce, maxJumps, groundLayer);
-            stateMachine = new PlayerStateMachine(this, inputReader, controller, animator, playerStateSettings);
+            PlayerStateMachine.Settings playerStateSettings = new(walkSpeed, rotationSmooth, maxJumpHeight, maxJumpTime, maxJumps, fallMultiplier, groundLayer);
+            stateMachine = new PlayerStateMachine(this, inputReader, controller, playerAnimation, playerStateSettings);
         }
 
         void Start()
         {
             stateMachine.Start();
-            controller.detectCollisions = true;
         }
 
         void Update()
@@ -71,18 +73,6 @@ namespace LobaApps
         {
             inputReader.Disable();
             stateMachine.Exit();
-        }
-
-        public void Attack()
-        {
-        }
-
-        public void Jump()
-        {
-        }
-
-        public void Move()
-        {
         }
     }
 

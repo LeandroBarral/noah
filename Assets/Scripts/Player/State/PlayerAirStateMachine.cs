@@ -11,7 +11,15 @@ namespace LobaApps
         public PlayerAirStateMachine(PlayerStateMachine context) : base(States.Fall)
         {
             Context = context;
-            Transitions.Add(new Transition<States>(States.Jump, new FuncPredicate(() => Context.IsJumpPressed)));
+            Transitions.Add(new Transition<States>(States.Jump, new FuncPredicate(() => Context.IsJumping)));
+            Transitions.Add(new Transition<States>(States.Fall, new FuncPredicate(() => Context.IsFalling)));
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            Context.PlayerAnimation.Landing();
         }
 
         public override IState<States> Factory(States stateKey) => stateKey switch

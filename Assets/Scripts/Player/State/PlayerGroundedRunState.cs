@@ -25,7 +25,7 @@ namespace LobaApps
         public void Start()
         {
             // Debug.Log(">> [Enter] State -> Run");
-            stateMachine.Context.Animator.CrossFade(PlayerAnimationHashes.Run, 0.1f);
+            stateMachine.Context.PlayerAnimation.Run();
         }
 
         public void Exit()

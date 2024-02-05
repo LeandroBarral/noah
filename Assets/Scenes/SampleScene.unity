@@ -1090,11 +1090,12 @@ MonoBehaviour:
   playerAnimation: {fileID: 809065802}
   walkSpeed: 5
   rotationSmooth: 10
-  jumpForce: 7.5
-  maxJumps: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
+  maxJumpHeight: 2
+  maxJumpTime: 1
+  maxJumps: 2
 --- !u!136 &809065799
 CapsuleCollider:
   m_ObjectHideFlags: 0
